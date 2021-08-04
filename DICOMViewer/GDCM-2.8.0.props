@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <GDCM_DIR>D:\LIbrary\gdcm\gdcm-2.8.0\$(Configuration)</GDCM_DIR>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IncludePath>$(GDCM_DIR)\include\gdcm-2.8;$(IncludePath)</IncludePath>
+    <LibraryPath>$(GDCM_DIR)\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>gdcmcharls.lib;gdcmCommon.lib;gdcmDICT.lib;gdcmDSED.lib;gdcmexpat.lib;gdcmgetopt.lib;gdcmIOD.lib;gdcmjpeg12.lib;gdcmjpeg16.lib;gdcmjpeg8.lib;gdcmMEXD.lib;gdcmMSFF.lib;gdcmopenjp2.lib;gdcmzlib.lib;socketxx.lib;vtkgdcm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>gdcmcharls.dll;gdcmCommon.dll;gdcmDICT.dll;gdcmDSED.dll;gdcmexpat.dll;gdcmgetopt.dll;gdcmIOD.dll;gdcmjpeg12.dll;gdcmjpeg16.dll;gdcmjpeg8.dll;gdcmMEXD.dll;gdcmMSFF.dll;gdcmopenjp2.dll;gdcmzlib.dll;socketxx.dll;vtkgdcm.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="GDCM_DIR">
+      <Value>$(GDCM_DIR)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
