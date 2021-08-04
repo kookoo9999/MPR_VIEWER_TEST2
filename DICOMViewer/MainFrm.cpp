@@ -41,6 +41,11 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_3D_ON_OFF, &CMainFrame::OnUpdateView3dOnOff)
 //	ON_COMMAND(ID_VIEW_SCA, &CMainFrame::OnViewSca)
 //	ON_UPDATE_COMMAND_UI(ID_VIEW_SCA, &CMainFrame::OnUpdateViewSca)
+ON_COMMAND(ID_SLIDER_RX, &CMainFrame::OnSliderRx)
+ON_COMMAND(ID_SLIDER_RY, &CMainFrame::OnSliderRy)
+ON_COMMAND(ID_SLIDER_RZ, &CMainFrame::OnSliderRz)
+ON_COMMAND(ID_VIEW_OUTLINE, &CMainFrame::OnViewOutline)
+ON_UPDATE_COMMAND_UI(ID_VIEW_OUTLINE, &CMainFrame::OnUpdateViewOutline)
 END_MESSAGE_MAP()
 
 // CMainFrame 생성/소멸
@@ -312,12 +317,11 @@ void CMainFrame::OnView3dOnOff()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	//DVManager::Mgr()->bCheck = !DVManager::Mgr()->bCheck;
-	DVManager::Mgr()->m_bShowPlane = !DVManager::Mgr()->m_bShowPlane;
+	
 	DVManager::Mgr()->ShowPlnae();
+	//DVManager::Mgr()->m_bShowPlane = !DVManager::Mgr()->m_bShowPlane;
 	
 }
-
-
 
 void CMainFrame::OnUpdateView3dOnOff(CCmdUI *pCmdUI)
 {
@@ -326,6 +330,19 @@ void CMainFrame::OnUpdateView3dOnOff(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(DVManager::Mgr()->m_bShowPlane);
 }
 
+void CMainFrame::OnViewOutline()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	DVManager::Mgr()->ShowOutline();
+	//DVManager::Mgr()->bCheck = !DVManager::Mgr()->bCheck;
+}
+
+
+void CMainFrame::OnUpdateViewOutline(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(DVManager::Mgr()->bCheck);
+}
 
 
 //void CMainFrame::OnViewSca()
@@ -341,3 +358,49 @@ void CMainFrame::OnUpdateView3dOnOff(CCmdUI *pCmdUI)
 //	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 //	pCmdUI->SetCheck(DVManager::Mgr()->bCheck);
 //}
+
+
+void CMainFrame::OnSliderRx()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
+	// 리본 슬라이더 포인터 획득
+	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+		m_wndRibbonBar.FindByID(ID_SLIDER_RX));
+
+	// 리본 슬라이더 위치 값 획득
+	int pos = pSlider->GetPos();
+
+	
+
+}
+
+
+void CMainFrame::OnSliderRy()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
+	// 리본 슬라이더 포인터 획득
+	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+		m_wndRibbonBar.FindByID(ID_SLIDER_RY));
+
+	// 리본 슬라이더 위치 값 획득
+	int pos = pSlider->GetPos();
+
+}
+
+
+void CMainFrame::OnSliderRz()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
+	// 리본 슬라이더 포인터 획득
+	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+		m_wndRibbonBar.FindByID(ID_SLIDER_RZ));
+
+	// 리본 슬라이더 위치 값 획득
+	int pos = pSlider->GetPos();
+
+}
+
+

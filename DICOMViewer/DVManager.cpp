@@ -18,6 +18,8 @@ DVManager::DVManager()
 }
 
 
+
+
 DVManager::~DVManager()
 {
 }
@@ -32,7 +34,7 @@ DVManager* DVManager::Mgr()
 }
 
 
-vtkSmartPointer<vtkRenderWindow> DVManager::GetVtkWindow( int viewType )
+vtkSP<vtkRenderWindow> DVManager::GetVtkWindow( int viewType )
 {
 	// viewType 범위 검사
 	if( viewType < 0 || viewType >= NUM_VIEW ) return NULL;
@@ -49,18 +51,20 @@ void DVManager::InitVtkWindow( int viewType, void* hWnd )
 	// vtk Render Window 생성
 	if( m_vtkWindow[viewType] == NULL ) {
 		// Interactor 생성
-		vtkSmartPointer<vtkRenderWindowInteractor> interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+		C_VTK(vtkRenderWindowInteractor,interactor);
+		//vtkSP<vtkRenderWindowInteractor> interactor = vtkSP<vtkRenderWindowInteractor>::New();
 
 		// Renderer 생성
-		vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+		C_VTK(vtkRenderer, renderer);
+		
 		renderer->SetBackground( 0.0, 0.0, 0.0 );					// 검은색 배경
 
 		// 3D View 설정
 		if( viewType == VIEW_3D ) {
 			// Trackball Camera 인터랙션 스타일 적용
-			interactor->SetInteractorStyle( vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New() );
+			interactor->SetInteractorStyle( vtkSP<vtkInteractorStyleTrackballCamera>::New() );
 
-			vtkSmartPointer<vtkCamera> camera = renderer->GetActiveCamera();
+			vtkSP<vtkCamera> camera = renderer->GetActiveCamera();
 			camera->ParallelProjectionOn();				// Parallel Projection 모드
 			camera->SetPosition( 0.0, -1.0, 0.0 );		// 카메라 위치
 			camera->SetViewUp( 0.0, 0.0, 1.0 );			// 카메라 Up 벡터
@@ -68,16 +72,16 @@ void DVManager::InitVtkWindow( int viewType, void* hWnd )
 		// 2D View 설정
 		else {
 			// Image 인터랙션 스타일 적용
-			interactor->SetInteractorStyle( vtkSmartPointer<vtkInteractorStyleImage>::New() );
+			interactor->SetInteractorStyle( vtkSP<vtkInteractorStyleImage>::New() );
 
-			vtkSmartPointer<vtkCamera> camera = renderer->GetActiveCamera();
+			vtkSP<vtkCamera> camera = renderer->GetActiveCamera();
 			camera->ParallelProjectionOn();				// Parallel Projection 모드
 			camera->SetPosition( 0.0, 0.0, -1.0 );		// 카메라 위치
 			camera->SetViewUp( 0.0, -1.0, 0.0 );			// 카메라 Up 벡터
 		}
 		
 		// RenderWindow 생성 후 Dialog 핸들, Interactor, Renderer 설정
-		m_vtkWindow[viewType] = vtkSmartPointer<vtkRenderWindow>::New();
+		m_vtkWindow[viewType] = vtkSP<vtkRenderWindow>::New();
 		m_vtkWindow[viewType]->SetParentId( hWnd );
 		m_vtkWindow[viewType]->SetInteractor( interactor );
 		m_vtkWindow[viewType]->AddRenderer( renderer );
@@ -85,8 +89,8 @@ void DVManager::InitVtkWindow( int viewType, void* hWnd )
 
 		// 3D Render View의 Axes Actor 추가
 		if (m_vtkWindow[VIEW_3D]) {
-			vtkSmartPointer<vtkAxesActor> axesActor = vtkSmartPointer<vtkAxesActor>::New();
-			m_orientMarker = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+			C_VTK(vtkAxesActor, axesActor);
+			m_orientMarker = vtkSP<vtkOrientationMarkerWidget>::New();
 			m_orientMarker->SetOrientationMarker(axesActor);
 			m_orientMarker->SetCurrentRenderer(renderer);
 			m_orientMarker->SetInteractor(interactor);
@@ -107,18 +111,18 @@ void DVManager::ResizeVtkWindow( int viewType, int width, int height )
 	m_vtkWindow[viewType]->SetSize( width, height );
 }
 
-vtkSmartPointer<DicomLoader> DVManager::GetDicomLoader()
+vtkSP<DicomLoader> DVManager::GetDicomLoader()
 {
 	// DicomLoader 객체가 null 이면 생성
 	if( m_DicomLoader == NULL ) {
-		m_DicomLoader = vtkSmartPointer<DicomLoader>::New();
+		m_DicomLoader = vtkSP<DicomLoader>::New();
 	}
 
 	// DicomLoader 객체 반환
 	return m_DicomLoader;
 }
 
-vtkSmartPointer<vtkRenderer> DVManager::GetRenderer( int viewType )
+vtkSP<vtkRenderer> DVManager::GetRenderer( int viewType )
 {
 	// View 타입 검사
 	if( viewType < 0 || viewType >= NUM_VIEW ) return NULL;
@@ -129,7 +133,7 @@ vtkSmartPointer<vtkRenderer> DVManager::GetRenderer( int viewType )
 	return m_vtkWindow[viewType]->GetRenderers()->GetFirstRenderer();
 }
 
-void DVManager::OnSelectDicomGroup( vtkSmartPointer<DicomGroup> group )
+void DVManager::OnSelectDicomGroup( vtkSP<DicomGroup> group )
 {
 	// 렌더링 초기화
 	ClearVolumeDisplay();
@@ -144,7 +148,7 @@ void DVManager::OnSelectDicomGroup( vtkSmartPointer<DicomGroup> group )
 	UpdateVolumeDisplay();
 
 	//outline
-	ShowOutline();
+	//if(bCheck)	ShowOutline();
 	
 	// Plnae 렌더링 업데이트
 	//UpdatePlnae();
@@ -162,7 +166,7 @@ void DVManager::OnSelectDicomGroup( vtkSmartPointer<DicomGroup> group )
 void DVManager::ClearVolumeDisplay()
 {
 	// 로드된 Volume 데이터 검사
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
 	if( volumeData == NULL ) return;
 
 	// 3D 뷰에 볼륨 렌더링 제거
@@ -177,7 +181,7 @@ void DVManager::ClearVolumeDisplay()
 void DVManager::UpdateVolumeDisplay()
 {
 	// 로드된 Volume 데이터 검사
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
 	if( volumeData == NULL ) return;
 
 	// 3D 뷰에 볼륨 렌더링 추가
@@ -202,7 +206,7 @@ void DVManager::UpdateVolumeDisplay()
 void DVManager::ScrollSliceIndex( int viewType, int pos )
 {
 	// 현재 로드된 Volume 데이터
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
 	if( volumeData == NULL ) return;
 
 	// Volume 이미지의 인덱스 설정
@@ -219,7 +223,7 @@ void DVManager::ScrollSliceIndex( int viewType, int pos )
 void DVManager::ChangeVolumeRenderMode( int renderMode )
 {
 	// 현재 로드된 Volume 데이터 검사
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
 	if( volumeData == NULL ) return;
 	
 	// Volume 데이터의 모드 변경
@@ -234,7 +238,7 @@ void DVManager::UpdateAnnotation()
 	// 정보 표시 객체 생성
 	for( int viewType = 0; viewType < NUM_VIEW; viewType++ ) {
 		if( m_Annotation[viewType] == NULL ) {
-			m_Annotation[viewType] = vtkSmartPointer<vtkCornerAnnotation>::New();
+			m_Annotation[viewType] = vtkSP<vtkCornerAnnotation>::New();
 			m_Annotation[viewType]->SetMaximumFontSize( 20 );
 
 			GetRenderer( viewType )->AddViewProp( m_Annotation[viewType] );
@@ -256,7 +260,7 @@ void DVManager::UpdateSliceAnnotation( int viewType )
 		viewType != VIEW_SAGITTAL ) return;
 
 	// Volume 데이터 검사
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
 	if( volumeData == NULL ) return;
 	
 	// Volume 이미지의 인덱스 범위 
@@ -287,7 +291,7 @@ void DVManager::UpdateSliceAnnotation( int viewType )
 	}
 
 	// 그룹 데이터 검사
-	vtkSmartPointer<DicomGroup> group = GetDicomLoader()->GetCurrentGroup();
+	vtkSP<DicomGroup> group = GetDicomLoader()->GetCurrentGroup();
 	if( group == NULL ) return;
 
 	// 오른쪽 위 정보 : 환자정보
@@ -303,39 +307,69 @@ void DVManager::UpdateSliceAnnotation( int viewType )
 	m_Annotation[viewType]->SetText( 3, rightTopText.c_str() );
 }
 
+void DVManager::RotateVolume()
+{
+	// 로드된 Volume 데이터 검사
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	if (volumeData == NULL) return;
+
+	
+
+}
+
 void DVManager::ShowOutline()
 {
-	// Set the colors.	
-	C_VTK(vtkNamedColors, colors);
-
-	// Volume 데이터 검사
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
-	if (volumeData == NULL) return;
+	GetRenderer(VIEW_3D)->RemoveActor(m_pActorOutline);
+	m_pActorOutline = nullptr;
+	bCheck = !bCheck;
 	
+	if (bCheck)
 	{
-		C_VTK(vtkOutlineFilter, outlineData);
-		outlineData->SetInputData(volumeData->GetImageData());
+		// Set the colors.	
+		C_VTK(vtkNamedColors, colors);
 
-		C_VTK(vtkPolyDataMapper, mapOutline);
-		mapOutline->SetInputConnection(outlineData->GetOutputPort());
+		// Volume 데이터 검사
+		vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+		if (volumeData == NULL) return;
 
-		m_pActorOutline = vtkSP<vtkActor>::New();
-		m_pActorOutline->SetMapper(mapOutline);
-		//m_pActorOutline->GetProperty()->SetColor(colors->GetColor3d("Black").GetData());
+		{
+			C_VTK(vtkOutlineFilter, outlineData);
+			outlineData->SetInputData(volumeData->GetImageData());
 
-		GetRenderer(VIEW_3D)->AddActor(m_pActorOutline);
+			C_VTK(vtkPolyDataMapper, mapOutline);
+			mapOutline->SetInputConnection(outlineData->GetOutputPort());
 
+			m_pActorOutline = vtkSP<vtkActor>::New();
+			m_pActorOutline->SetMapper(mapOutline);
+
+			//m_pActorOutline->GetProperty()->SetColor(colors->GetColor3d("Gray").GetData());
+
+			GetRenderer(VIEW_3D)->AddActor(m_pActorOutline);
+			
+
+		}
 	}
+	
+	GetVtkWindow(VIEW_3D)->Render();
 }
 
 void DVManager::ShowPlnae()
 {
-	// Volume 데이터 검사
-	vtkSmartPointer<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
-	if (volumeData == NULL) return;
+	
+	for (auto& s : m_pActorSCAPlane)
+	{
+		GetRenderer(VIEW_3D)->RemoveActor(s);
+		s = nullptr;
+	}
+	m_pActorSCAPlane.clear();
+
+	m_bShowPlane = !m_bShowPlane;
 
 	if (m_bShowPlane)
 	{
+		// Volume 데이터 검사
+		vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+		if (volumeData == NULL) return;
 		
 		C_VTK(vtkImageActor, sagittal);
 		{
@@ -407,6 +441,8 @@ void DVManager::ShowPlnae()
 		{
 			GetRenderer(VIEW_3D)->AddActor(s);
 		}
-		m_vtkWindow[VIEW_3D]->Render();
+		
 	}
+	
+	GetVtkWindow(VIEW_3D)->Render();
 }

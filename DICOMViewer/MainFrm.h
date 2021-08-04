@@ -75,6 +75,11 @@ public:
 	afx_msg void OnUpdateView3dOnOff(CCmdUI *pCmdUI);
 //	afx_msg void OnViewSca();
 //	afx_msg void OnUpdateViewSca(CCmdUI *pCmdUI);
+	afx_msg void OnSliderRx();
+	afx_msg void OnSliderRy();
+	afx_msg void OnSliderRz();
+	afx_msg void OnViewOutline();
+	afx_msg void OnUpdateViewOutline(CCmdUI *pCmdUI);
 };
 
 

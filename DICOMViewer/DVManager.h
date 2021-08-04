@@ -1,5 +1,9 @@
 #pragma once
 
+#include <math.h>
+#include <vector>
+#include <array>
+
 #include <vtkSmartPointer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
@@ -95,22 +99,25 @@ public:
 	// DICOM 슬라이스 정보 표시
 	void UpdateSliceAnnotation( int viewType );
 
-	//3d View off
-	void Update3DView();
+	
 
 public:
 	bool bCheck = FALSE;
 
+	// Rotation 설정 값
+	double m_fRx, m_fRy, m_fRz;
+
 public:
 
-	//show outline
-	void ShowOutline();
+	
 
 	// 데이터 Outline
 	vtkSP<vtkActor> m_pActorOutline;
 
 	// Sagittal, Coronal, Axial View Plane Actor
 	std::vector<vtkSP<vtkImageActor>> m_pActorSCAPlane;
+
+	//vtkSP < std::vector<vtkSP<vtkImageActor>>> m_pActorSCAPlnae;
 
 	// Sagittal, Coronal, Axial Plane Position
 	int m_nSagittalPos, m_nCoronalPos, m_nAxialPos;
@@ -135,6 +142,16 @@ public:
 	void SetAxialPos(int value) { m_nAxialPos = value; }
 	int GetAxialPos() const { return m_nAxialPos; }
 
+	//Show Plane
 	void ShowPlnae();
+
+	//3d View off
+	void Update3DView();
+
+	//Volume Rotate
+	void RotateVolume();
+
+	//show outline
+	void ShowOutline();
 };
 
