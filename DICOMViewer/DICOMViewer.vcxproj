@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChildView.h" />
+    <ClInclude Include="ControlManager.h" />
     <ClInclude Include="DicomGroup.h" />
     <ClInclude Include="DicomGroupView.h" />
     <ClInclude Include="DicomLoader.h" />
@@ -200,6 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildView.cpp" />
+    <ClCompile Include="ControlManager.cpp" />
     <ClCompile Include="DicomGroup.cpp" />
     <ClCompile Include="DicomGroupView.cpp" />
     <ClCompile Include="DicomLoader.cpp" />

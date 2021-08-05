@@ -123,6 +123,7 @@ void CDicomGroupView::UpdateDicomTree()
 
 	// 트리 모두 펼치기
 	ExpandAllDicomGroupTree();
+	
 }
 
 HTREEITEM CDicomGroupView::GetDicomGroupItem( CString itemText, HTREEITEM parentItem )

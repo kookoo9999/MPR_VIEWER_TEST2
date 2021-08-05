@@ -22,6 +22,7 @@ DVManager::DVManager()
 
 DVManager::~DVManager()
 {
+	SAFE_DELETE(m_pControlManager);
 }
 
 DVManager* DVManager::Mgr()
@@ -161,6 +162,15 @@ void DVManager::OnSelectDicomGroup( vtkSP<DicomGroup> group )
 	for( int viewType = VIEW_AXIAL; viewType <= VIEW_SAGITTAL; viewType++ ) {
 		mainView->GetDlgVtkView( viewType )->UpdateScrollBar();
 	}
+	// 로드된 Volume 데이터 검사
+	vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+	if (volumeData == NULL) return;
+
+	m_pDICOMImage = volumeData->GetImageData();
+	// Thresholding, Rotate, Plane View Control 결과를 출력하는 클래스 객체 초기화
+	m_pControlManager = new CControlManager(m_pDICOMImage, GetRenderer(VIEW_3D));
+
+
 }
 
 void DVManager::ClearVolumeDisplay()
@@ -347,6 +357,34 @@ void DVManager::ShowOutline()
 		}
 	}
 	
+	GetVtkWindow(VIEW_3D)->Render();
+}
+
+void DVManager::ShowLineTest()
+{
+	m_pControlManager->SetLineOnOff(!m_pControlManager->GetLineOnOff());
+	m_pControlManager->Update();
+	GetVtkWindow(VIEW_3D)->Render();
+}
+
+void DVManager::ShowBoneTest()
+{
+	m_pControlManager->SetBoneOnOff(!m_pControlManager->GetBoneOnOff());
+	m_pControlManager->Update();
+	GetVtkWindow(VIEW_3D)->Render();
+}
+
+void DVManager::ShowSkinTest()
+{
+	m_pControlManager->SetSkinOnOff(!m_pControlManager->GetSkinOnOff());
+	m_pControlManager->Update();
+	GetVtkWindow(VIEW_3D)->Render();
+}
+
+void DVManager::ShowPlnaeTest()
+{
+	m_pControlManager->SetSCAViewOnOff(!m_pControlManager->GetSCAViewOnOff());
+	m_pControlManager->Update();
 	GetVtkWindow(VIEW_3D)->Render();
 }
 

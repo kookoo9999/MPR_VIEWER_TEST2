@@ -327,7 +327,7 @@ void CMainFrame::OnView3dOnOff()
 	//DVManager::Mgr()->bCheck = !DVManager::Mgr()->bCheck;
 
 	DVManager::Mgr()->m_bShowPlane = !DVManager::Mgr()->m_bShowPlane;
-	DVManager::Mgr()->ShowPlnae();
+	DVManager::Mgr()->ShowPlnaeTest();
 
 	//DVManager::Mgr()->m_bShowPlane = !DVManager::Mgr()->m_bShowPlane;
 	
@@ -343,7 +343,9 @@ void CMainFrame::OnUpdateView3dOnOff(CCmdUI *pCmdUI)
 void CMainFrame::OnViewOutline()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	DVManager::Mgr()->ShowOutline();
+	DVManager::Mgr()->ShowLineTest();
+	DVManager::Mgr()->m_testCheck = !DVManager::Mgr()->m_testCheck;
+	//DVManager::Mgr()->ShowOutline();
 	//DVManager::Mgr()->bCheck = !DVManager::Mgr()->bCheck;
 }
 
@@ -351,7 +353,9 @@ void CMainFrame::OnViewOutline()
 void CMainFrame::OnUpdateViewOutline(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->SetCheck(DVManager::Mgr()->bCheck);
+	//pCmdUI->SetCheck(DVManager::Mgr()->bCheck);
+	
+	pCmdUI->SetCheck(DVManager::Mgr()->m_testCheck);
 }
 
 
@@ -361,11 +365,12 @@ void CMainFrame::OnCheckBone()
 
 	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
 		m_wndRibbonBar.FindByID(ID_SLIDER_BONE));
-	pSlider->SetPos(DVManager::Mgr()->m_fThresholdBone);
+	pSlider->SetPos(DVManager::Mgr()->m_pControlManager->GetBoneThreshold());
 	pSlider->Redraw();
 	
 	DVManager::Mgr()->m_bShowBone = !DVManager::Mgr()->m_bShowBone;
-	DVManager::Mgr()->ShowBone();
+	//DVManager::Mgr()->ShowBone();
+	DVManager::Mgr()->ShowBoneTest();
 	
 }
 
@@ -479,8 +484,11 @@ void CMainFrame::OnSliderBone()
 	// 리본 슬라이더 위치 값 획득
 	int pos = pSlider->GetPos();
 
-	DVManager::Mgr()->m_fThresholdBone = pos;
-	DVManager::Mgr()->ShowBone();
+	//DVManager::Mgr()->m_fThresholdBone = pos;
+	//DVManager::Mgr()->ShowBone();
+
+	DVManager::Mgr()->m_pControlManager->SetBoneThreshold(pos);
+	DVManager::Mgr()->ShowBoneTest();
 
 	
 

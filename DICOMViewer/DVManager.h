@@ -25,6 +25,7 @@
 #include <vtkProperty.h>
 
 #include "DicomLoader.h"
+#include "ControlManager.h"
 
 class DVManager
 {
@@ -145,6 +146,10 @@ public:
 	// Skin Visibility 설정 값
 	bool m_bShowSkin = FALSE;
 
+	bool m_testCheck = FALSE;
+	bool m_tBoneCheck = FALSE;
+	bool m_tSkinCheck = FALSE;
+
 	vtkSP<vtkImageData> m_pAlignedData;
 
 	// Plane 을 켜고 끈다.
@@ -176,5 +181,18 @@ public:
 
 	//show outline
 	void ShowOutline();
+
+	void ShowLineTest();
+
+	void ShowBoneTest();
+
+	void ShowSkinTest();
+
+	void ShowPlnaeTest();
+	// 영상 데이터 저장 변수
+	vtkSP<vtkImageData> m_pDICOMImage;
+
+	// Thresholding, Rotate, Plane View Control 결과를 출력하는 클래스
+	CControlManager* m_pControlManager;
 };
 
