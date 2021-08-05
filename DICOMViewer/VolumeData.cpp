@@ -17,6 +17,7 @@ void VolumeData::ReadyForVolumeRendering()
 {
 	// Volume Mapper 준비
 	vtkSmartPointer<vtkSmartVolumeMapper> smartMapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+	
 	smartMapper->SetInputData( m_ImageData );
 
 	// 투명도 함수, 컬러 함수 준비

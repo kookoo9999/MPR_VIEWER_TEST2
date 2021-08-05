@@ -41,11 +41,19 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_3D_ON_OFF, &CMainFrame::OnUpdateView3dOnOff)
 //	ON_COMMAND(ID_VIEW_SCA, &CMainFrame::OnViewSca)
 //	ON_UPDATE_COMMAND_UI(ID_VIEW_SCA, &CMainFrame::OnUpdateViewSca)
-ON_COMMAND(ID_SLIDER_RX, &CMainFrame::OnSliderRx)
-ON_COMMAND(ID_SLIDER_RY, &CMainFrame::OnSliderRy)
-ON_COMMAND(ID_SLIDER_RZ, &CMainFrame::OnSliderRz)
+//ON_COMMAND(ID_SLIDER_RX, &CMainFrame::OnSliderRx)
+//ON_COMMAND(ID_SLIDER_RY, &CMainFrame::OnSliderRy)
+//ON_COMMAND(ID_SLIDER_RZ, &CMainFrame::OnSliderRz)
 ON_COMMAND(ID_VIEW_OUTLINE, &CMainFrame::OnViewOutline)
 ON_UPDATE_COMMAND_UI(ID_VIEW_OUTLINE, &CMainFrame::OnUpdateViewOutline)
+ON_COMMAND(ID_CHECK_BONE, &CMainFrame::OnCheckBone)
+ON_UPDATE_COMMAND_UI(ID_CHECK_BONE, &CMainFrame::OnUpdateCheckBone)
+ON_COMMAND(ID_SLIDER_BONE, &CMainFrame::OnSliderBone)
+ON_COMMAND(ID_CHECK_SKIN, &CMainFrame::OnCheckSkin)
+ON_UPDATE_COMMAND_UI(ID_CHECK_SKIN, &CMainFrame::OnUpdateCheckSkin)
+ON_COMMAND(ID_SLIDER_SKIN, &CMainFrame::OnSliderSkin)
+ON_UPDATE_COMMAND_UI(ID_SLIDER_BONE, &CMainFrame::OnUpdateSliderBone)
+ON_UPDATE_COMMAND_UI(ID_SLIDER_SKIN, &CMainFrame::OnUpdateSliderSkin)
 END_MESSAGE_MAP()
 
 // CMainFrame 생성/소멸
@@ -317,8 +325,10 @@ void CMainFrame::OnView3dOnOff()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	//DVManager::Mgr()->bCheck = !DVManager::Mgr()->bCheck;
-	
+
+	DVManager::Mgr()->m_bShowPlane = !DVManager::Mgr()->m_bShowPlane;
 	DVManager::Mgr()->ShowPlnae();
+
 	//DVManager::Mgr()->m_bShowPlane = !DVManager::Mgr()->m_bShowPlane;
 	
 }
@@ -345,6 +355,50 @@ void CMainFrame::OnUpdateViewOutline(CCmdUI *pCmdUI)
 }
 
 
+void CMainFrame::OnCheckBone()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
+	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+		m_wndRibbonBar.FindByID(ID_SLIDER_BONE));
+	pSlider->SetPos(DVManager::Mgr()->m_fThresholdBone);
+	pSlider->Redraw();
+	
+	DVManager::Mgr()->m_bShowBone = !DVManager::Mgr()->m_bShowBone;
+	DVManager::Mgr()->ShowBone();
+	
+}
+
+
+void CMainFrame::OnUpdateCheckBone(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(DVManager::Mgr()->m_bShowBone);
+}
+
+void CMainFrame::OnCheckSkin()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
+	CMFCRibbonSlider* spSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+		m_wndRibbonBar.FindByID(ID_SLIDER_SKIN));
+	spSlider->SetPos(DVManager::Mgr()->m_fThresholdSkin);
+	spSlider->Redraw();
+
+	DVManager::Mgr()->m_bShowSkin = !DVManager::Mgr()->m_bShowSkin;
+	DVManager::Mgr()->ShowSkin();
+
+	
+}
+
+
+void CMainFrame::OnUpdateCheckSkin(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(DVManager::Mgr()->m_bShowSkin);
+}
+
+
 //void CMainFrame::OnViewSca()
 //{
 //	// TODO: 여기에 명령 처리기 코드를 추가합니다.
@@ -360,47 +414,112 @@ void CMainFrame::OnUpdateViewOutline(CCmdUI *pCmdUI)
 //}
 
 
-void CMainFrame::OnSliderRx()
+//void CMainFrame::OnSliderRx()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//
+//	// 리본 슬라이더 포인터 획득
+//	//CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+//	//	m_wndRibbonBar.FindByID(ID_SLIDER_RX));
+//
+//	
+//	// 리본 슬라이더 위치 값 획득
+//	//int pos = pSlider->GetPos();
+//
+//	
+//
+//}
+
+
+//void CMainFrame::OnSliderRy()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//
+//	// 리본 슬라이더 포인터 획득
+//	//CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+//	//	m_wndRibbonBar.FindByID(ID_SLIDER_RY));
+//
+//	// 리본 슬라이더 위치 값 획득
+//	//int pos = pSlider->GetPos();
+//
+//}
+
+
+//void CMainFrame::OnSliderRz()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//
+//	// 리본 슬라이더 포인터 획득
+//	//CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
+//	//	m_wndRibbonBar.FindByID(ID_SLIDER_RZ));
+//
+//	// 리본 슬라이더 위치 값 획득
+//	//int pos = pSlider->GetPos();
+//
+//}
+
+
+
+
+
+void CMainFrame::OnSliderBone()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 
+
 	// 리본 슬라이더 포인터 획득
 	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
-		m_wndRibbonBar.FindByID(ID_SLIDER_RX));
+		m_wndRibbonBar.FindByID(ID_SLIDER_BONE));
 
+	//CMFCRibbonLabel* pLabel = DYNAMIC_DOWNCAST(CMFCRibbonLabel, m_wndRibbonBar.FindByID(IDC_NUM_BONE));
+	//pLabel->SetText(_T("ChangeText"));
+	//pLabel->Redraw();
+
+	
 	// 리본 슬라이더 위치 값 획득
 	int pos = pSlider->GetPos();
+
+	DVManager::Mgr()->m_fThresholdBone = pos;
+	DVManager::Mgr()->ShowBone();
 
 	
 
+	//DVManager::Mgr()->m_fThresholdBone += pos;
 }
 
 
-void CMainFrame::OnSliderRy()
+
+
+
+void CMainFrame::OnSliderSkin()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 
 	// 리본 슬라이더 포인터 획득
 	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
-		m_wndRibbonBar.FindByID(ID_SLIDER_RY));
+		m_wndRibbonBar.FindByID(ID_SLIDER_SKIN));
+
+	//CMFCRibbonLabel* pLabel = DYNAMIC_DOWNCAST(CMFCRibbonLabel, m_wndRibbonBar.FindByID(IDC_NUM_BONE));
+	//pLabel->SetText(_T("ChangeText"));
+	//pLabel->Redraw();
+
 
 	// 리본 슬라이더 위치 값 획득
 	int pos = pSlider->GetPos();
 
+	DVManager::Mgr()->m_fThresholdSkin = pos;
+	DVManager::Mgr()->ShowSkin();
 }
 
 
-void CMainFrame::OnSliderRz()
+void CMainFrame::OnUpdateSliderBone(CCmdUI *pCmdUI)
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-
-	// 리본 슬라이더 포인터 획득
-	CMFCRibbonSlider* pSlider = DYNAMIC_DOWNCAST(CMFCRibbonSlider,
-		m_wndRibbonBar.FindByID(ID_SLIDER_RZ));
-
-	// 리본 슬라이더 위치 값 획득
-	int pos = pSlider->GetPos();
-
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	
 }
 
 
+void CMainFrame::OnUpdateSliderSkin(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+}

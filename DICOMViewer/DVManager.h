@@ -22,6 +22,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkNamedColors.h>
+#include <vtkProperty.h>
 
 #include "DicomLoader.h"
 
@@ -34,7 +35,6 @@ private:
 	DVManager();
 	virtual ~DVManager();
 
-	static DVManager* m_Instance;
 	static void Destroy() { delete m_Instance; m_Instance = NULL; }
 
 public:
@@ -56,6 +56,7 @@ protected:
 	/// 정보 표시
 	vtkSmartPointer<vtkCornerAnnotation> m_Annotation[NUM_VIEW];
 
+	static DVManager* m_Instance;
 	
 
 public:
@@ -105,7 +106,13 @@ public:
 	bool bCheck = FALSE;
 
 	// Rotation 설정 값
-	double m_fRx, m_fRy, m_fRz;
+	double m_fRx = 0.0;
+	double m_fRy = 0.0;
+	double m_fRz = 0.0;
+
+	// Skin, Bone Threshold 설정 값
+	double m_fThresholdSkin = 72;
+	double m_fThresholdBone = 452;
 
 public:
 
@@ -116,6 +123,10 @@ public:
 
 	// Sagittal, Coronal, Axial View Plane Actor
 	std::vector<vtkSP<vtkImageActor>> m_pActorSCAPlane;
+	
+	vtkSP<vtkActor> m_pActorBone;
+
+	vtkSP<vtkActor> m_pActorSkin;
 
 	//vtkSP < std::vector<vtkSP<vtkImageActor>>> m_pActorSCAPlnae;
 
@@ -127,6 +138,12 @@ public:
 
 	// Sagittal, Coronal, Axial Plane Visibility 설정 값
 	bool m_bShowPlane=FALSE;
+
+	// Bone Visibility 설정 값
+	bool m_bShowBone = FALSE;
+
+	// Skin Visibility 설정 값
+	bool m_bShowSkin = FALSE;
 
 	vtkSP<vtkImageData> m_pAlignedData;
 
@@ -144,6 +161,12 @@ public:
 
 	//Show Plane
 	void ShowPlnae();
+
+	//Show Bone 
+	void ShowBone();
+
+	//Show Skin
+	void ShowSkin();
 
 	//3d View off
 	void Update3DView();

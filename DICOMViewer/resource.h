@@ -42,16 +42,22 @@
 #define ID_COMBO_VOLUME_RENDER_MODE     32773
 #define ID_SLIDER_RZ                    32774
 #define ID_SLIDER_RX                    32778
+#define ID_SLIDER_SKIN                  32778
 #define ID_SLIDER_RY                    32779
 #define ID_VIEW_3D_ON_OFF               32780
 #define ID_VIEW_OUTLINE                 32781
+#define ID_CHECK_BONE                   32782
+#define ID_CHECK_SKIN                   32783
+#define ID_SLIDER_BONE                  32784
+#define ID_EDIT2                        32786
+#define ID_SLIDER2                      32787
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32782
+#define _APS_NEXT_COMMAND_VALUE         32788
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

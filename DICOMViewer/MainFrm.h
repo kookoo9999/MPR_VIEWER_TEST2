@@ -75,11 +75,19 @@ public:
 	afx_msg void OnUpdateView3dOnOff(CCmdUI *pCmdUI);
 //	afx_msg void OnViewSca();
 //	afx_msg void OnUpdateViewSca(CCmdUI *pCmdUI);
-	afx_msg void OnSliderRx();
-	afx_msg void OnSliderRy();
-	afx_msg void OnSliderRz();
+//	afx_msg void OnSliderRx();
+//	afx_msg void OnSliderRy();
+//	afx_msg void OnSliderRz();
 	afx_msg void OnViewOutline();
 	afx_msg void OnUpdateViewOutline(CCmdUI *pCmdUI);
+	afx_msg void OnCheckBone();
+	afx_msg void OnUpdateCheckBone(CCmdUI *pCmdUI);
+	afx_msg void OnSliderBone();
+	afx_msg void OnCheckSkin();
+	afx_msg void OnUpdateCheckSkin(CCmdUI *pCmdUI);
+	afx_msg void OnSliderSkin();
+	afx_msg void OnUpdateSliderBone(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateSliderSkin(CCmdUI *pCmdUI);
 };
 
 

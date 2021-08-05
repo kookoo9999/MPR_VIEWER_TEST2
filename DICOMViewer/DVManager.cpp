@@ -185,19 +185,16 @@ void DVManager::UpdateVolumeDisplay()
 	if( volumeData == NULL ) return;
 
 	// 3D 뷰에 볼륨 렌더링 추가
-	GetRenderer( VIEW_3D )->AddViewProp( volumeData->GetVolumeRendering() );
+	GetRenderer( VIEW_3D )->AddVolume( volumeData->GetVolumeRendering() );
 	//GetRenderer(VIEW_3D)->ComputeVisiblePropBounds(renderer_bounds);
 	GetRenderer( VIEW_3D )->ResetCamera();	// 카메라 재설정
 	m_vtkWindow[VIEW_3D]->Render();			// 화면 갱신
-	
+
 	// 슬라이스 뷰에 각 슬라이스 Actor 추가
 	for( int viewType = VIEW_AXIAL; viewType <= VIEW_SAGITTAL; viewType++ ) {
 		GetRenderer( viewType )->AddActor( volumeData->GetSliceActor( viewType ) );
 		GetRenderer( viewType )->ResetCamera();	// 카메라 재설정
-		
-
-		m_vtkWindow[viewType]->Render();			// 화면 갱신
-		
+		m_vtkWindow[viewType]->Render();			// 화면 갱신		
 	}
 }
 
@@ -342,7 +339,7 @@ void DVManager::ShowOutline()
 			m_pActorOutline = vtkSP<vtkActor>::New();
 			m_pActorOutline->SetMapper(mapOutline);
 
-			//m_pActorOutline->GetProperty()->SetColor(colors->GetColor3d("Gray").GetData());
+			m_pActorOutline->GetProperty()->SetColor(colors->GetColor3d("Silver").GetData());
 
 			GetRenderer(VIEW_3D)->AddActor(m_pActorOutline);
 			
@@ -354,22 +351,34 @@ void DVManager::ShowOutline()
 }
 
 void DVManager::ShowPlnae()
-{
-	
+{	
+
 	for (auto& s : m_pActorSCAPlane)
 	{
 		GetRenderer(VIEW_3D)->RemoveActor(s);
 		s = nullptr;
-	}
+	}	
 	m_pActorSCAPlane.clear();
-
-	m_bShowPlane = !m_bShowPlane;
-
+	
 	if (m_bShowPlane)
 	{
 		// Volume 데이터 검사
 		vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
 		if (volumeData == NULL) return;
+
+		auto spacing = volumeData->GetImageData()->GetSpacing();
+
+		double renderer_bounds[6];
+		GetRenderer(VIEW_3D)->ComputeVisiblePropBounds(renderer_bounds);
+
+		m_nAxialMax = renderer_bounds[5] / spacing[2];
+		m_nCoronalMax = renderer_bounds[1] / spacing[0];
+		m_nSagittalMax = renderer_bounds[3] / spacing[1];
+
+		// 영상의 1/2 위치로 Postion 을 초기화한다.
+		m_nSagittalPos = m_nSagittalMax / 2;
+		m_nCoronalPos = m_nCoronalMax / 2;
+		m_nAxialPos = m_nAxialMax / 2;
 		
 		C_VTK(vtkImageActor, sagittal);
 		{
@@ -440,9 +449,95 @@ void DVManager::ShowPlnae()
 		for (auto& s : m_pActorSCAPlane)
 		{
 			GetRenderer(VIEW_3D)->AddActor(s);
+			
 		}
-		
+	
 	}
 	
+	auto pWin = GetVtkWindow(VIEW_3D);
+
+	pWin->Render();
+}
+
+void DVManager::ShowBone()
+{
+	GetRenderer(VIEW_3D)->RemoveActor(m_pActorBone);
+	m_pActorBone = nullptr;
+
+	
+
+	//m_bShowBone = !m_bShowBone;
+	// Set the colors.	
+	C_VTK(vtkNamedColors, colors);
+
+	
+
+	if (m_bShowBone)
+	{
+		// Volume 데이터 검사
+		vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+		if (volumeData == NULL) return;
+
+		
+		C_VTK(vtkMarchingCubes, boneExtractor);
+		boneExtractor->SetInputData(volumeData->GetImageData());
+		boneExtractor->SetValue(0, m_fThresholdBone);
+
+		C_VTK(vtkStripper, boneStripper);
+		boneStripper->SetInputConnection(boneExtractor->GetOutputPort());
+
+		C_VTK(vtkPolyDataMapper, boneMapper);
+		boneMapper->SetInputConnection(boneStripper->GetOutputPort());
+		boneMapper->ScalarVisibilityOff();
+
+		m_pActorBone = vtkSP<vtkActor>::New();
+		m_pActorBone->SetMapper(boneMapper);
+		m_pActorBone->GetProperty()->SetDiffuseColor(colors->GetColor3d("Ivory").GetData());
+
+		GetRenderer(VIEW_3D)->AddActor(m_pActorBone);
+	}
+
+	GetVtkWindow(VIEW_3D)->Render();
+
+}
+
+void DVManager::ShowSkin()
+{
+	GetRenderer(VIEW_3D)->RemoveActor(m_pActorSkin);
+	m_pActorSkin = nullptr;
+
+	
+	C_VTK(vtkNamedColors, colors);
+
+	std::array<unsigned char, 4> skinColor{ { 255, 125, 64 } };
+	colors->SetColor("SkinColor", skinColor.data());
+
+
+	if (m_bShowSkin)
+	{
+		// Volume 데이터 검사
+		vtkSP<VolumeData> volumeData = GetDicomLoader()->GetVolumeData();
+		if (volumeData == NULL) return;
+
+		C_VTK(vtkMarchingCubes, skinExtractor);
+		skinExtractor->SetInputData(volumeData->GetImageData());
+		skinExtractor->SetValue(0, m_fThresholdSkin);
+
+		C_VTK(vtkStripper, skinStripper);
+		skinStripper->SetInputConnection(skinExtractor->GetOutputPort());
+
+		C_VTK(vtkPolyDataMapper, skinMapper);
+		skinMapper->SetInputConnection(skinStripper->GetOutputPort());
+		skinMapper->ScalarVisibilityOff();
+
+		m_pActorSkin = vtkSP<vtkActor>::New();
+		m_pActorSkin->SetMapper(skinMapper);
+		m_pActorSkin->GetProperty()->SetDiffuseColor(colors->GetColor3d("SkinColor").GetData());
+		m_pActorSkin->GetProperty()->SetSpecular(.3);
+		m_pActorSkin->GetProperty()->SetSpecularPower(20);
+		m_pActorSkin->GetProperty()->SetOpacity(.5);
+
+		GetRenderer(VIEW_3D)->AddActor(m_pActorSkin);
+	}
 	GetVtkWindow(VIEW_3D)->Render();
 }
